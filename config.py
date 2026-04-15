@@ -11,7 +11,7 @@ import os
 # IMPORTANT: For security, it's best to set MP_API_KEY as an environment variable
 # Example: export MP_API_KEY="your_key_here"
 # Or create a .env file (see .env.example)
-MP_API_KEY = os.environ.get("MP_API_KEY", "eZTCs8qU7fvw7p2BHdo9txw4U6BpQG4h")
+MP_API_KEY = "eZTCs8qU7fvw7p2BHdo9txw4U6BpQG4h"
 # In Colab: set via the @param cell or os.environ before running
 
 # ── Data ─────────────────────────────────────────────────
