@@ -1,6 +1,6 @@
 # AI-Driven Optimisation of Radar Absorbing Materials for Stealth Aircraft Skin
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/YOUR_USERNAME/ram_optimisation/blob/main/RAM_Optimisation.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/jayant1309/ram_optimisation/blob/main/RAM_Optimisation.ipynb)
 
 ## Project Overview
 
@@ -28,18 +28,40 @@ The project integrates materials science domain knowledge with state-of-the-art 
 
 ## Setup
 
+### ⚠️ API Key Security
+
+**IMPORTANT**: See [SECURITY.md](SECURITY.md) for secure API key handling.
+
+Never commit API keys to Git. This repository uses:
+- Environment variables (recommended)
+- `.env` file (not tracked by Git)
+- Direct config edit (less secure)
+
 ### Local Machine
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/ram_optimisation.git
+git clone https://github.com/jayant1309/ram_optimisation.git
 cd ram_optimisation
 pip install -r requirements.txt
 ```
 
-Edit `config.py` to set your Materials Project API key:
-```python
-MP_API_KEY = "YOUR_API_KEY_HERE"
+Set your Materials Project API key (choose one method):
+
+**Method 1 (Recommended) - Environment variable:**
+```bash
+export MP_API_KEY="your_api_key_here"
 ```
+
+**Method 2 - .env file:**
+```bash
+cp .env.example .env
+# Edit .env and add your API key
+```
+
+**Method 3 - Direct edit:**
+Edit `config.py` and replace `YOUR_KEY_HERE` with your API key (do not commit this change).
+
+Get your free API key from: https://materialsproject.org/open
 
 Run the pipeline:
 ```bash
