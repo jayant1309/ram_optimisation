@@ -1,6 +1,6 @@
 # AI-Driven Optimisation of Radar Absorbing Materials for Stealth Aircraft Skin
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/jayant1309/ram_optimisation/blob/master/RAM_Optimisation.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/jayant1309/ram_optimisation/blob/main/RAM_Optimisation.ipynb)
 
 ## Project Overview
 
