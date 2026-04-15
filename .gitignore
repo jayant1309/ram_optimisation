@@ -1,0 +1,22 @@
+# Data files
+data/*.csv
+data/*.pkl
+data/*.pth
+
+# Plot files
+plots/*.png
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Environment
+.env
+*.egg-info/
+
+# OS files
+.DS_Store
+
+# Keep directories
+!data/.gitkeep
+!plots/.gitkeep
