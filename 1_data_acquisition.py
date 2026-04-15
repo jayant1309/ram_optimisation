@@ -50,7 +50,7 @@ def acquire_materials_data():
         print("Make sure to install: pip install mp-api>=0.41.2")
         raise
 
-    print("[Step 1] Starting data acquisition from Materials Project...")
+    print("Now at Step 1] Starting data acquisition from Materials Project...")
     print(f"API Key configured: {'Yes' if MP_API_KEY != 'YOUR_KEY_HERE' else 'No (using placeholder)'}")
 
     # Use the summary endpoint to get both dielectric properties and band gap
@@ -129,7 +129,7 @@ def acquire_materials_data():
     output_path = os.path.join(DATA_DIR, 'raw_materials.csv')
     df.to_csv(output_path, index=False)
 
-    print(f"[Step 1 complete] Saved raw materials data to {output_path}")
+    print(f"Now at Step 1 complete] Saved raw materials data to {output_path}")
     print(f"Columns: {list(df.columns)}")
     print("First 5 rows:")
     print(df.head().to_string())

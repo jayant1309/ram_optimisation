@@ -44,7 +44,7 @@ def compute_material_features(df):
     except ImportError as e:
         raise
 
-    print("[Step 2] Starting feature engineering...")
+    print("Now at Step 2] Starting feature engineering...")
     df = df.copy()
     df = df.dropna(subset=[TARGET_COL])
 
@@ -141,7 +141,7 @@ def compute_material_features(df):
     output_path = os.path.join(DATA_DIR, 'features.csv')
     final_df.to_csv(output_path, index=False)
     
-    print(f"\n[Step 2 complete] Saved engineered features to {output_path}")
+    print(f"\nNow at Step 2 complete] Saved engineered features to {output_path}")
     return final_df
 
 if __name__ == '__main__':

@@ -46,8 +46,8 @@ from config import (
     N_FOLDS, DEVICE
 )
 
-print(f"[Step 6] PyTorch version: {torch.__version__}")
-print(f"[Step 6] Using device: {DEVICE}")
+print(f"Now at Step 6] PyTorch version: {torch.__version__}")
+print(f"Now at Step 6] Using device: {DEVICE}")
 
 if torch.cuda.is_available():
     print(f"GPU: {torch.cuda.get_device_name(0)}")
@@ -96,7 +96,7 @@ class RAMNet(nn.Module):
         return self.output_layer(x)
 
 def train_model_kfold(X, y, n_folds=N_FOLDS):
-    print(f"[Step 6] Training Classifier with {n_folds}-Fold Cross Validation...")
+    print(f"Now at Step 6] Training Classifier with {n_folds}-Fold Cross Validation...")
     kf = KFold(n_splits=n_folds, shuffle=True, random_state=RANDOM_STATE)
     models, train_losses_all, val_losses_all, fold_metrics = [], [], [], []
 
@@ -181,7 +181,7 @@ def train_model_kfold(X, y, n_folds=N_FOLDS):
 
 
 def train_final_model(X_train, y_train, X_test, y_test):
-    print("[Step 6] Training final classifier on full dataset...")
+    print("Now at Step 6] Training final classifier on full dataset...")
     train_loader = DataLoader(RAMDataset(X_train, y_train), batch_size=BATCH_SIZE, shuffle=True)
     test_loader = DataLoader(RAMDataset(X_test, y_test), batch_size=BATCH_SIZE, shuffle=False)
 
@@ -266,7 +266,7 @@ def perform_deep_learning():
 
     torch.save(final_model.state_dict(), os.path.join(DATA_DIR, 'dnn_model.pth'))
     joblib.dump({'final_metrics': final_metrics, 'classification_threshold': threshold}, os.path.join(DATA_DIR, 'dnn_results.pkl'))
-    print(f"\n[Step 6 complete] Deep learning completed successfully!")
+    print(f"\nNow at Step 6 complete] Deep learning completed successfully!")
 
 if __name__ == '__main__':
     perform_deep_learning()

@@ -69,7 +69,7 @@ def train_classification_models(X_train, X_test, y_train, y_test):
     Returns:
         tuple: (trained_models, results_dict)
     """
-    print("[Step 5] Training classification models...")
+    print("Starting Step 5: Training classification models...")
 
     models = {}
     results = {}
@@ -279,7 +279,7 @@ if __name__ == '__main__':
 
         joblib.dump(results, os.path.join(DATA_DIR, 'classification_results.pkl'))
 
-        print(f"\n[Step 5 complete] Classification completed successfully!")
+        print(f"\nStep 5 complete Classification completed successfully!")
         print(f"Models and results saved in {DATA_DIR}/")
 
     except Exception as e:

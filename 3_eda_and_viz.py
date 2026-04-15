@@ -49,7 +49,7 @@ def plot_target_distribution(df):
     Returns:
         matplotlib.figure.Figure: Figure object
     """
-    print("[Step 3a] Plotting target distribution...")
+    print("Now at Step 3a] Plotting target distribution...")
 
     plt.style.use('seaborn-v0_8-darkgrid')
     fig, ax = plt.subplots(figsize=(10, 6), dpi=150)
@@ -91,7 +91,7 @@ def plot_correlation_heatmap(df):
     Returns:
         matplotlib.figure.Figure: Figure object
     """
-    print("[Step 3b] Plotting correlation heatmap...")
+    print("Now at Step 3b] Plotting correlation heatmap...")
 
     plt.style.use('seaborn-v0_8-darkgrid')
 
@@ -128,7 +128,7 @@ def plot_boxplot_by_crystal_system(df):
     Returns:
         matplotlib.figure.Figure: Figure object
     """
-    print("[Step 3c] Plotting box plot by crystal system...")
+    print("Now at Step 3c] Plotting box plot by crystal system...")
 
     plt.style.use('seaborn-v0_8-darkgrid')
     fig, ax = plt.subplots(figsize=(10, 6), dpi=150)
@@ -165,7 +165,7 @@ def plot_pca_scatter(df):
     Returns:
         tuple: (matplotlib.figure.Figure, explained_variance)
     """
-    print("[Step 3d] Performing PCA and plotting scatter...")
+    print("Now at Step 3d] Performing PCA and plotting scatter...")
 
     plt.style.use('seaborn-v0_8-darkgrid')
 
@@ -216,7 +216,7 @@ def plot_tsne_scatter(df):
     Returns:
         matplotlib.figure.Figure: Figure object
     """
-    print("[Step 3e] Performing t-SNE and plotting scatter...")
+    print("Now at Step 3e] Performing t-SNE and plotting scatter...")
 
     plt.style.use('seaborn-v0_8-darkgrid')
 
@@ -266,7 +266,7 @@ def plot_kmeans_clustering(df):
     Returns:
         tuple: (elbow_fig, cluster_fig, df_with_clusters)
     """
-    print("[Step 3f] Performing K-Means clustering...")
+    print("Now at Step 3f] Performing K-Means clustering...")
 
     plt.style.use('seaborn-v0_8-darkgrid')
     # Prepare feature data
@@ -402,7 +402,7 @@ def perform_eda_and_visualization(df):
     # 3f: K-Means clustering
     outputs['kmeans_elbow'], outputs['kmeans_clusters'], df_clustered = plot_kmeans_clustering(df)
 
-    print(f"[Step 3 complete] All visualizations saved to {PLOTS_DIR}")
+    print(f"Step 3 complete All visualizations saved to {PLOTS_DIR}")
 
     return outputs, df_clustered
 
@@ -417,7 +417,7 @@ if __name__ == '__main__':
 
     try:
         outputs, df_clustered = perform_eda_and_visualization(df)
-        print(f"\n[Step 3 complete] EDA completed successfully!")
+        print(f"\nStep 3 complete EDA completed successfully!")
     except Exception as e:
         print(f"[ERROR] EDA failed: {e}")
         import traceback

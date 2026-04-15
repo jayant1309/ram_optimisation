@@ -82,7 +82,7 @@ except ImportError:
 
 
 def load_all_results():
-    print("[Step 7] Loading results from previous steps...")
+    print("Now at Step 7] Loading results from previous steps...")
 
     # Load classification results
     classification_path = os.path.join(DATA_DIR, 'classification_results.pkl')
@@ -106,7 +106,7 @@ def load_all_results():
 
 
 def build_comparison_table(classification_results, dnn_results):
-    print("\n[Step 7a] Building model comparison table...")
+    print("\nNow at Step 7a] Building model comparison table...")
     comparison_data = []
 
     model_mapping = {
@@ -156,7 +156,7 @@ def build_comparison_table(classification_results, dnn_results):
 
 
 def plot_model_comparison(comparison_df):
-    print("\n[Step 7b] Plotting model comparison...")
+    print("\nNow at Step 7b] Plotting model comparison...")
 
     plt.style.use('seaborn-v0_8-darkgrid')
     
@@ -209,7 +209,7 @@ def plot_model_comparison(comparison_df):
 
 
 def plot_feature_importance():
-    print("\n[Step 7c] Plotting feature importance...")
+    print("\nNow at Step 7c] Plotting feature importance...")
 
     # FIXED: Pointing to the Decision Tree trained in step 5 instead of the missing Random Forest
     model_path = os.path.join(DATA_DIR, 'classification_decision_tree.pkl')
@@ -261,7 +261,7 @@ def plot_feature_importance():
 
 
 def predict_candidate_materials():
-    print("\n[Step 7d] Predicting materials with DNN and ranking candidates...")
+    print("\nNow at Step 7d] Predicting materials with DNN and ranking candidates...")
 
     features_path = os.path.join(DATA_DIR, 'features.csv')
     if not os.path.exists(features_path):
@@ -305,7 +305,7 @@ def predict_candidate_materials():
         return None
 
     # Make predictions on all materials
-    print("\n[Step 7d] Scoring all materials with DNN...")
+    print("\nNow at Step 7d] Scoring all materials with DNN...")
     X_tensor = torch.tensor(df[FEATURE_COLS].values, dtype=torch.float32).to(DEVICE)
 
     with torch.no_grad():
@@ -358,4 +358,4 @@ if __name__ == '__main__':
     # 5. Predict candidates
     predict_candidate_materials()
     
-    print("\n[Step 7 complete] Evaluation finished successfully!")
+    print("\nStep 7 complete Evaluation finished successfully!")

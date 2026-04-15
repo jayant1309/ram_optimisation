@@ -53,7 +53,7 @@ def train_and_evaluate_models(X_train, X_test, y_train, y_test):
     Returns:
         dict: Results dictionary with model metrics
     """
-    print("[Step 4] Training baseline regression models...")
+    print("Now at Step 4] Training baseline regression models...")
 
     models = {}
     results = {}
@@ -263,8 +263,8 @@ if __name__ == '__main__':
         # Print comparison table
         print_comparison_table(results_to_save)
 
-        print(f"\n[Step 4 complete] Saved results to {DATA_DIR}/regression_results.pkl")
-        print(f"[Step 4 complete] Models saved to {DATA_DIR}/")
+        print(f"\nNow at Step 4 complete] Saved results to {DATA_DIR}/regression_results.pkl")
+        print(f"Now at Step 4 complete] Models saved to {DATA_DIR}/")
 
     except Exception as e:
         print(f"[ERROR] Regression training failed: {e}")
