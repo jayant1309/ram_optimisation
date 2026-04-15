@@ -102,7 +102,8 @@ def compute_material_features(df):
 
                     # Valence electron concentration (sum of valence electrons)
                     if hasattr(elem_data, 'nvalence'):
-                        valence_electron_conc += elem_data.nvalence() * count
+                        # nvalence is a property, not a method - access directly
+                        valence_electron_conc += elem_data.nvalence * count
 
                     # Mean ionization energy
                     avg_ionization_energy += elem_data.ionization_energy * weight
