@@ -1,9 +1,11 @@
 """
-Step 1: Data Acquisition
+Step 1: Data Acquisition - Fixed Version
 
 This module queries the Materials Project database for dielectric materials with
 specified properties. It extracts raw data including dielectric constants, band gaps,
 density, volume, crystal symmetry information, and material IDs.
+
+Fixed to use correct MP API fields and endpoints based on mp-api==0.41.2
 """
 
 import os
@@ -33,6 +35,7 @@ from tqdm import tqdm
 sys.path.append(BASE_DIR)
 from config import MP_API_KEY
 
+
 def acquire_materials_data():
     """
     Query Materials Project API for dielectric materials.
@@ -50,10 +53,12 @@ def acquire_materials_data():
     print("[Step 1] Starting data acquisition from Materials Project...")
     print(f"API Key configured: {'Yes' if MP_API_KEY != 'YOUR_KEY_HERE' else 'No (using placeholder)'}")
 
-    # Query the Materials Project database
+    # Use the summary endpoint to get both dielectric properties and band gap
+    # This is more efficient than querying dielectric endpoint and filtering separately
     with MPRester(MP_API_KEY) as mpr:
-        print("Connecting to Materials Project API...")
-        docs = mpr.materials.dielectric.search(
+        print("Querying Materials Project summary endpoint for dielectric materials...")
+        docs = mpr.summary.search(
+            has_props=["dielectric"],  # Filter for materials with dielectric data
             fields=[
                 "material_id",
                 "formula_pretty",
@@ -62,7 +67,9 @@ def acquire_materials_data():
                 "volume",
                 "nsites",
                 "symmetry",
-                "dielectric"
+                "e_total",
+                "e_ionic",
+                "e_electronic"
             ]
         )
 
@@ -72,14 +79,10 @@ def acquire_materials_data():
     data = []
     for doc in tqdm(docs, desc="Extracting material data"):
         try:
-            # Extract dielectric properties
-            dielectric = doc.dielectric
-            if dielectric is None:
-                continue
-
-            e_total = dielectric.e_total
-            e_electronic = dielectric.e_electronic
-            e_ionic = dielectric.e_ionic
+            # Extract dielectric properties (direct fields from API response)
+            e_total = doc.e_total
+            e_electronic = doc.e_electronic
+            e_ionic = doc.e_ionic
 
             # Skip if e_total is None
             if e_total is None:
@@ -139,4 +142,6 @@ if __name__ == '__main__':
         df = acquire_materials_data()
     except Exception as e:
         print(f"[ERROR] Data acquisition failed: {e}")
+        import traceback
+        traceback.print_exc()
         sys.exit(1)
