@@ -42,46 +42,51 @@ This pipeline uniquely combines **regression** and **classification** to provide
 ![pymatgen](https://img.shields.io/badge/pymatgen-2024.11+-orange.svg)
 ![Google Colab](https://img.shields.io/badge/Google%20Colab-Compatible-yellow.svg)
 
-## Quick Start
+## Getting Started
 
-### ⚡ Get Your Materials Project API Key
+### Getting Your Materials Project API Key
+
+First, you'll need to get a free API key from Materials Project:
 
 1. Visit https://materialsproject.org/api
 2. Register for a free account
 3. Copy your API key from your dashboard
 
-### 🔐 Set Up API Key (Choose ONE method)
+### Setting Up Your API Key
 
-#### Method 1: Environment Variable (Recommended for Command Line)
+You can set up your API key in any of these ways (just pick one):
+
+#### Option 1: Environment Variable (Good for Command Line)
 ```bash
 export MP_API_KEY="your_api_key_here"
 ```
 
-#### Method 2: .env File (Recommended for IDEs)
+#### Option 2: .env File (Good for IDEs)
 ```bash
 cp .env.example .env
-# Edit .env and add your API key on line 1
+# Then edit .env and add your API key on line 1
 ```
 
-#### Method 3: Direct Config (Quick but Less Secure)
-Edit `config.py` and replace `YOUR_KEY_HERE` with your API key (do not commit this change!)
+#### Option 3: Direct Config (Quick, but less secure)
+Just edit `config.py` and replace `YOUR_KEY_HERE` with your API key (but don't commit this change!).
 
-### ▶️ Run the Pipeline
+### Running the Pipeline
+
+Once your API key is set up, simply run:
 
 ```bash
 python main.py
 ```
 
-This executes all 7 steps automatically. Individual steps can also be run directly:
+This will run all 7 steps automatically. If you want to run a specific step instead:
 
 ```bash
-# Run a specific step
 python 1_data_acquisition.py
 python 2_feature_engineering.py
-# ... etc
+# ... and so on for other steps
 ```
 
-### 🚀 Get Started with Google Colab
+### Running in Google Colab
 
 Click the "Open In Colab" badge at the top of this README. When the notebook opens:
 
@@ -90,7 +95,7 @@ Click the "Open In Colab" badge at the top of this README. When the notebook ope
 3. Run all cells to execute the pipeline
 4. Check `MyDrive/ram_optimisation/` for all outputs
 
-*All outputs and trained models will be automatically saved to your Google Drive in `MyDrive/ram_optimisation/`*
+All outputs and trained models will be automatically saved to your Google Drive in `MyDrive/ram_optimisation/`
 
 ## Local Development Setup
 
@@ -107,9 +112,9 @@ cd ram_optimisation
 pip install -r requirements.txt
 ```
 
-### ⚠️ API Key Security
+### API Key Security
 
-**IMPORTANT**: See [SECURITY.md](SECURITY.md) for secure API key handling best practices.
+Please see [SECURITY.md](SECURITY.md) for secure API key handling best practices.
 
 Never commit API keys to Git. This repository provides three secure methods:
 - **Environment variables** (recommended for production)

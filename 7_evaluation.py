@@ -1,3 +1,4 @@
+
 """
 Step 7: Evaluation and Comparison
 
@@ -10,19 +11,26 @@ import os
 import sys
 import importlib.util
 
-# Detect environment - must be at top of every file
+# Detect environment - Adjusted for local scripts + Drive data
 try:
     import google.colab
     IN_COLAB = True
     from google.colab import drive
+    
+    # Mount drive because data and plots are stored here
     drive.mount('/content/drive')
-    BASE_DIR = '/content/drive/MyDrive/ram_optimisation'
+    DRIVE_DIR = '/content/drive/MyDrive/ram_optimisation'
+    
+    # The scripts themselves are stored locally in the Colab environment
+    SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 except ImportError:
     IN_COLAB = False
-    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    DRIVE_DIR = os.path.dirname(os.path.abspath(__file__))
+    SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
-DATA_DIR = os.path.join(BASE_DIR, 'data')
-PLOTS_DIR = os.path.join(BASE_DIR, 'plots')
+# Data and plots point to Google Drive
+DATA_DIR = os.path.join(DRIVE_DIR, 'data')
+PLOTS_DIR = os.path.join(DRIVE_DIR, 'plots')
 os.makedirs(DATA_DIR, exist_ok=True)
 os.makedirs(PLOTS_DIR, exist_ok=True)
 
@@ -32,21 +40,45 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import joblib
 import torch
+import torch.nn as nn
 
-sys.path.append(BASE_DIR)
+# Append local script directory so we can import config.py
+sys.path.append(SCRIPT_DIR)
 from config import (
-    FEATURE_COLS, TARGET_COL, RANDOM_STATE, TEST_SIZE, DEVICE
+    FEATURE_COLS, TARGET_COL, RANDOM_STATE, TEST_SIZE,
+    DEVICE, HIDDEN_DIMS, DROPOUT
 )
 
-# 🌟 THE FIX: Point directly to the local GitHub clone folder, NOT Google Drive
-dl_path = '/content/ram_optimisation/ram_optimisation/6_deep_learning.py'
-
-spec = importlib.util.spec_from_file_location("deep_learning", dl_path)
-dl_module = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(dl_module)
-
-RAMNet = dl_module.RAMNet
-RAMDataset = dl_module.RAMDataset
+# Robust import for model classes from the local deep learning module
+try:
+    # Direct import if running as script and named without numbers
+    from deep_learning import RAMNet, RAMDataset
+except ImportError:
+    print("[INFO] Using robust module loader for deep learning classes...")
+    
+    # Search local script locations
+    possible_paths = [
+        os.path.join(SCRIPT_DIR, '6_deep_learning.py'),
+        os.path.join(os.getcwd(), '6_deep_learning.py')
+    ]
+    
+    dl_path = None
+    for path in possible_paths:
+        if os.path.exists(path):
+            dl_path = path
+            break
+            
+    if dl_path:
+        spec = importlib.util.spec_from_file_location("deep_learning", dl_path)
+        dl_module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(dl_module)
+        RAMNet = dl_module.RAMNet
+        RAMDataset = dl_module.RAMDataset
+        print(f"[INFO] Successfully loaded deep learning module from: {dl_path}")
+    else:
+        print("ERROR: Could not find 6_deep_learning.py.")
+        print(f"Looked in: {possible_paths}")
+        sys.exit(1)
 
 
 def load_all_results():
@@ -58,7 +90,7 @@ def load_all_results():
         classification_results = joblib.load(classification_path)
         print(f"Loaded classification results from {classification_path}")
     else:
-        print("Warning: Classification results not found")
+        print("Warning: Classification results not found. Did you save them in Step 5?")
         classification_results = {}
 
     # Load DNN results
@@ -89,10 +121,10 @@ def build_comparison_table(classification_results, dnn_results):
         short_name = model_mapping.get(model_name, model_name)
         comparison_data.append({
             'Model': short_name,
-            'Accuracy': metrics.get('Accuracy', np.nan),
-            'Precision': metrics.get('Precision', np.nan),
-            'Recall': metrics.get('Recall', np.nan),
-            'F1': metrics.get('F1', np.nan)
+            'Accuracy': metrics.get('accuracy', np.nan),
+            'Precision': metrics.get('precision', np.nan),
+            'Recall': metrics.get('recall', np.nan),
+            'F1': metrics.get('f1', np.nan)
         })
 
     # Add DNN results
@@ -103,10 +135,10 @@ def build_comparison_table(classification_results, dnn_results):
              
         comparison_data.append({
             'Model': 'DNN',
-            'Accuracy': avg_metrics.get('Accuracy', dnn_results.get('final_metrics', {}).get('Accuracy', np.nan)),
-            'Precision': avg_metrics.get('Precision', dnn_results.get('final_metrics', {}).get('Precision', np.nan)),
-            'Recall': avg_metrics.get('Recall', dnn_results.get('final_metrics', {}).get('Recall', np.nan)),
-            'F1': avg_metrics.get('F1', dnn_results.get('final_metrics', {}).get('F1', np.nan))
+            'Accuracy': avg_metrics.get('Accuracy', np.nan),
+            'Precision': avg_metrics.get('Precision', np.nan),
+            'Recall': avg_metrics.get('Recall', np.nan),
+            'F1': avg_metrics.get('F1', np.nan)
         })
 
     comparison_df = pd.DataFrame(comparison_data)
@@ -127,16 +159,20 @@ def plot_model_comparison(comparison_df):
     print("\n[Step 7b] Plotting model comparison...")
 
     plt.style.use('seaborn-v0_8-darkgrid')
-    fig, axes = plt.subplots(1, 2, figsize=(14, 6), dpi=150)
+    
+    # BULLETPROOF FIX: Unpack the axes directly into ax1 and ax2
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 6), dpi=150)
 
-    # Accuracy plot
-    ax1 = axes
-    models = comparison_df['Model'].values
-    acc_values = comparison_df['Accuracy'].values
+    # Convert values to numeric to prevent plotting errors if data is missing
+    models = comparison_df['Model'].astype(str).values
+    acc_values = pd.to_numeric(comparison_df['Accuracy'], errors='coerce').values
+    f1_values = pd.to_numeric(comparison_df['F1'], errors='coerce').values
 
+    # --- Accuracy plot ---
     bars1 = ax1.bar(models, acc_values, color='lightgreen', alpha=0.8, edgecolor='black')
     ax1.set_ylabel('Accuracy', fontsize=12)
     ax1.set_title('Accuracy Comparison', fontsize=14, fontweight='bold')
+    ax1.set_xticks(range(len(models)))
     ax1.set_xticklabels(models, rotation=45, ha='right')
     ax1.set_ylim(0, 1.0) 
 
@@ -146,13 +182,11 @@ def plot_model_comparison(comparison_df):
             ax1.text(bar.get_x() + bar.get_width()/2., height + 0.01,
                     f'{value:.4f}', ha='center', va='bottom', fontsize=9)
 
-    # F1 plot
-    ax2 = axes
-    f1_values = comparison_df['F1'].values
-
+    # --- F1 Score plot ---
     bars2 = ax2.bar(models, f1_values, color='lightblue', alpha=0.8, edgecolor='black')
     ax2.set_ylabel('F1 Score', fontsize=12)
     ax2.set_title('F1 Score Comparison', fontsize=14, fontweight='bold')
+    ax2.set_xticks(range(len(models)))
     ax2.set_xticklabels(models, rotation=45, ha='right')
     ax2.set_ylim(0, 1.0)
 
@@ -177,18 +211,17 @@ def plot_model_comparison(comparison_df):
 def plot_feature_importance():
     print("\n[Step 7c] Plotting feature importance...")
 
-    rf_model_path = os.path.join(DATA_DIR, 'classification_Random Forest.pkl')
-    if not os.path.exists(rf_model_path):
-        rf_model_path = os.path.join(DATA_DIR, 'classification_model.pkl') 
-        
-    if not os.path.exists(rf_model_path):
-        print("Classification Random Forest model not found. Skipping feature importance.")
+    # FIXED: Pointing to the Decision Tree trained in step 5 instead of the missing Random Forest
+    model_path = os.path.join(DATA_DIR, 'classification_decision_tree.pkl')
+    
+    if not os.path.exists(model_path):
+        print("Classification Decision Tree model not found. Skipping feature importance.")
         return None
 
     try:
-        rf_model = joblib.load(rf_model_path)
-        if hasattr(rf_model, 'feature_importances_'):
-            importances = rf_model.feature_importances_
+        tree_model = joblib.load(model_path)
+        if hasattr(tree_model, 'feature_importances_'):
+            importances = tree_model.feature_importances_
         else:
             print("Model does not have feature_importances_ attribute")
             return None
@@ -205,7 +238,7 @@ def plot_feature_importance():
         bars = ax.barh(fi_df['Feature'], fi_df['Importance'], color='steelblue', alpha=0.8)
         ax.set_xlabel('Feature Importance', fontsize=12)
         ax.set_ylabel('Feature', fontsize=12)
-        ax.set_title('Random Forest Feature Importance', fontsize=14, fontweight='bold')
+        ax.set_title('Decision Tree Feature Importance', fontsize=14, fontweight='bold')
 
         for bar, importance in zip(bars, fi_df['Importance']):
             width = bar.get_width()
@@ -231,7 +264,17 @@ def predict_candidate_materials():
     print("\n[Step 7d] Predicting materials with DNN and ranking candidates...")
 
     features_path = os.path.join(DATA_DIR, 'features.csv')
-    df = pd.read_csv(features_path)
+    if not os.path.exists(features_path):
+        print(f"Error: Features file not found at {features_path}")
+        print("Please run steps 1-6 first to generate features and train models")
+        return None
+
+    try:
+        df = pd.read_csv(features_path)
+        print(f"Loaded {len(df)} materials from {features_path}")
+    except Exception as e:
+        print(f"Error loading features: {e}")
+        return None
 
     model_path = os.path.join(DATA_DIR, 'dnn_model.pth')
     dnn_results_path = os.path.join(DATA_DIR, 'dnn_results.pkl')
@@ -250,4 +293,69 @@ def predict_candidate_materials():
             pass
 
     input_dim = len(FEATURE_COLS)
-    model = RAMNet(input_dim, 0.3).to(DEVICE)
+    model = RAMNet(input_dim, HIDDEN_DIMS, DROPOUT).to(DEVICE)
+
+    # Load the trained model weights
+    try:
+        model.load_state_dict(torch.load(model_path, map_location=DEVICE))
+        model.eval()
+        print(f"Loaded DNN model from {model_path}")
+    except Exception as e:
+        print(f"Error loading model from {model_path}: {e}")
+        return None
+
+    # Make predictions on all materials
+    print("\n[Step 7d] Scoring all materials with DNN...")
+    X_tensor = torch.tensor(df[FEATURE_COLS].values, dtype=torch.float32).to(DEVICE)
+
+    with torch.no_grad():
+        logits = model(X_tensor)
+        probs = torch.sigmoid(logits).cpu().numpy().flatten()
+
+    # Attach probabilities and rank materials
+    df['Probability_High_Absorber'] = probs
+    df_sorted = df.sort_values('Probability_High_Absorber', ascending=False)
+
+    # Display top 5 candidates
+    print("\n" + "="*70)
+    print("TOP 5 RADAR ABSORBING MATERIAL CANDIDATES")
+    print("="*70)
+    print(f"{'Rank':<6} {'Formula':<20} {'Probability':<15} {'Actual e_total':<15}")
+    print("-"*70)
+
+    for i in range(1, 6):
+        idx = df_sorted.index[i-1]
+        formula = df_sorted.loc[idx, 'formula_pretty']
+        prob = df_sorted.loc[idx, 'Probability_High_Absorber'] * 100
+        actual_e = df_sorted.loc[idx, TARGET_COL]
+
+        print(f"{i:<6} {formula:<20} {prob:>10.2f}%     {actual_e:>10.4f}")
+
+    print("="*70)
+    print(f"Based on median split threshold: {threshold:.4f}")
+
+    return df_sorted.head(5)
+
+
+if __name__ == '__main__':
+    print("=" * 60)
+    print("STEP 7: MODEL EVALUATION AND PREDICTION")
+    print("=" * 60)
+    
+    # 1. Load results
+    classification_results, dnn_results = load_all_results()
+    
+    # 2. Build and display comparison table
+    comparison_df = build_comparison_table(classification_results, dnn_results)
+    
+    # 3. Plot model comparison
+    if not comparison_df.empty:
+        plot_model_comparison(comparison_df)
+    
+    # 4. Plot feature importance
+    plot_feature_importance()
+    
+    # 5. Predict candidates
+    predict_candidate_materials()
+    
+    print("\n[Step 7 complete] Evaluation finished successfully!")

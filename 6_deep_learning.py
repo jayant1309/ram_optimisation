@@ -111,7 +111,8 @@ def train_model_kfold(X, y, n_folds=N_FOLDS):
 
         model = RAMNet(X.shape, HIDDEN_DIMS, DROPOUT).to(DEVICE)
         
-        # 🌟 CORE CLASSIFICATION FIX: Use Binary Cross Entropy with Logits
+        # Using Binary Cross Entropy with Logits Loss for the classification task
+    # This is the appropriate loss function for our binary classification approach
         criterion = nn.BCEWithLogitsLoss() 
         optimizer = torch.optim.Adam(model.parameters(), lr=LEARNING_RATE, weight_decay=1e-4)
         scheduler = ReduceLROnPlateau(optimizer, mode='min', factor=0.5, patience=10)
@@ -241,8 +242,8 @@ def perform_deep_learning():
     X = df[FEATURE_COLS].values
     y_raw = df[TARGET_COL].values
     
-    # 🌟 CORE CLASSIFICATION FIX: Convert continuous target to Binary
-    # We split at the median to ensure perfectly balanced classes
+    # Converting continuous target to binary for classification
+    # Splitting at median ensures balanced classes for better training
     threshold = np.median(y_raw)
     print(f"Creating binary targets split at median e_total: {threshold:.4f}")
     y_binary = (y_raw >= threshold).astype(float)

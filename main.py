@@ -40,7 +40,7 @@ def run_step(step_title, script_name):
         bool: True if successful, False otherwise
     """
     print(f"\n{'='*60}")
-    print(f"STEP: {step_title}")
+    print(f"Starting step: {step_title}")
     print(f"{'='*60}")
 
     start_time = time.time()
@@ -56,14 +56,14 @@ def run_step(step_title, script_name):
         elapsed_time = time.time() - start_time
 
         if result.returncode == 0:
-            print(f"\n[DONE] {step_title} completed in {elapsed_time:.1f}s")
+            print(f"\nStep completed: {step_title} finished in {elapsed_time:.1f}s")
             return True
         else:
-            print(f"\n[ERROR] {step_title} failed with return code {result.returncode}")
+            print(f"\nError occurred: {step_title} failed with return code {result.returncode}")
             return False
 
     except Exception as e:
-        print(f"\n[ERROR] {step_title} failed: {e}")
+        print(f"\nError occurred: {step_title} failed: {e}")
         return False
 
 
@@ -114,10 +114,10 @@ if __name__ == '__main__':
     try:
         main()
     except KeyboardInterrupt:
-        print("\n\n[INTERRUPTED] Pipeline terminated by user")
+        print("\n\nPipeline interrupted by user")
         sys.exit(1)
     except Exception as e:
-        print(f"\n[ERROR] Unexpected error: {e}")
+        print(f"\nUnexpected error: {e}")
         import traceback
         traceback.print_exc()
         sys.exit(1)

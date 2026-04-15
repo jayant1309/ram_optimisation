@@ -120,7 +120,7 @@ def compute_material_features(df):
 
     feature_df = pd.DataFrame(features)
     
-    # Label Encoding happens BEFORE the missing value check!
+    # First, we apply Label Encoding before checking for missing values
     le = LabelEncoder()
     feature_df['crystal_system_encoded'] = le.fit_transform(feature_df['crystal_system'].astype(str))
     joblib.dump(le, os.path.join(DATA_DIR, 'label_encoder.pkl'))

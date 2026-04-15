@@ -277,6 +277,8 @@ if __name__ == '__main__':
         print_classification_reports(y_true_dict, results)
         print_comparison_table(results)
 
+        joblib.dump(results, os.path.join(DATA_DIR, 'classification_results.pkl'))
+
         print(f"\n[Step 5 complete] Classification completed successfully!")
         print(f"Models and results saved in {DATA_DIR}/")
 
