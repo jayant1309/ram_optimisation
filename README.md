@@ -168,14 +168,14 @@ All outputs and trained models will be automatically saved to your Google Drive 
 
 After running the pipeline, outputs are organized as follows:
 
-### 📊 Visualizations (`plots/` directory)
+### Visualizations (`plots/` directory)
 - **EDA**: Target distributions, correlation heatmaps, PCA/t-SNE projections, K-means clustering
 - **Regression**: Actual vs predicted plots for all baseline models  
 - **Classification**: Confusion matrices with accuracy/precision/recall/F1 metrics
 - **Model Comparison**: Bar plots comparing Accuracy and F1 scores across all models
 - **Feature Importance**: Random Forest feature importance rankings
 
-### 💾 Data & Models (`data/` directory)
+### Data & Models (`data/` directory)
 - **Processed Data**: raw_materials.csv → features.csv → clustered_features.csv
 - **Trained Models**: 
   - Regression: Linear, Polynomial, SVR, Random Forest (.pkl)
@@ -184,7 +184,7 @@ After running the pipeline, outputs are organized as follows:
 - **Results**: Model metrics, predictions, and evaluation summaries (.pkl)
 - **Preprocessing**: Saved scalers, imputers, and encoders for reproducibility
 
-### 🎯 Key Outputs
+### Key Outputs
 - **Model Performance Table**: Side-by-side comparison of all models
 - **Top Candidate Materials**: Ranked list of high-potential RAM candidates
 - **Feature Engineering Pipeline**: Reusable preprocessing for new materials
