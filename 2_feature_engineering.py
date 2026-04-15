@@ -94,23 +94,30 @@ def compute_material_features(df):
                     count = element_counts[elem.symbol]
                     weight = count / total_atoms
 
-                    # Weighted mean electronegativity (Pauling scale)
-                    avg_electronegativity += elem_data.electronegativity_pauling * weight
+                    # 1. Weighted mean electronegativity (Pauling scale)
+                    en = elem_data.electronegativity_pauling
+                    if en is not None:
+                        avg_electronegativity += en * weight
 
-                    # Weighted mean atomic mass
-                    avg_atomic_mass += elem_data.atomic_weight * weight
+                    # 2. Weighted mean atomic mass
+                    mass = elem_data.atomic_weight
+                    if mass is not None:
+                        avg_atomic_mass += mass * weight
 
-                    # Valence electron concentration (sum of valence electrons)
-                    if hasattr(elem_data, 'nvalence'):
-                        # nvalence is a property, not a method - access directly
-                        valence_electron_conc += elem_data.nvalence * count
+                    # 3. Valence electron concentration
+                    if hasattr(elem_data, 'nvalence') and callable(getattr(elem_data, 'nvalence', None)):
+                        valence_electron_conc += elem_data.nvalence() * count
 
-                    # Mean ionization energy
-                    avg_ionization_energy += elem_data.ionization_energy * weight
+                    # 4. Mean ionization energy (First Ionization Energy)
+                    # Use .get(1) to safely pull the 1st ionization energy from the dictionary
+                    ie = elem_data.ionenergies.get(1)
+                    if ie is not None:
+                        avg_ionization_energy += ie * weight
 
-                    # Mean atomic radius
-                    if elem_data.atomic_radius:
-                        avg_atomic_radius += elem_data.atomic_radius * weight
+                    # 5. Mean atomic radius
+                    rad = elem_data.atomic_radius
+                    if rad is not None:
+                        avg_atomic_radius += rad * weight
 
                 except Exception as e:
                     print(f"Warning: Could not fetch data for element {elem.symbol}: {e}")
