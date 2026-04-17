@@ -31,7 +31,7 @@ FEATURE_COLS = [
 ]
 
 # ── ML ───────────────────────────────────────────────────
-RANDOM_STATE = 42
+RANDOM_STATE = 22
 TEST_SIZE = 0.2
 N_FOLDS = 5
 
